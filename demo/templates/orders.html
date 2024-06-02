@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+{% for order in orders %}
+{{ order.name }}
+    <table class='table'>
+        <thead>
+          <tr>
+            <th>№</th>
+            <th>Вид работ</th>
+            <th>Ед.изм.</th>
+            <th>Цена</th>
+            <th>Кол-во</th>
+            <th>Сумма</th>
+
+          </tr>
+        </thead>
+      {% for p in order.positions.all %}
+          <tr>
+            <td>{{p.id}}</td>
+            <td>{{p.product.name}}</td>
+            <td>{{p.product.units}}</td>
+            <td>{{p.product.price}}</td>
+            <td>{{p.quantity}}</td>
+            <td>{% widthratio p.quantity 1 p.product.price %}</td>
+          </tr>
+      {% endfor %}
+    </table>
+{% endfor %}
+</body>
+</html>
