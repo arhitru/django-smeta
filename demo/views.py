@@ -6,6 +6,7 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.conf import settings
 
 from demo.models import Car, Person, Order, Product, OrderPosition, Weapon
 from .serializers import WeaponSerializers
@@ -66,10 +67,15 @@ def pagi(request):
     page_number = int(request.GET.get("page", 1))
     paginator = Paginator(CONTENT, 10)
     page = paginator.get_page(page_number)
+    msg = '<br>'.join(page.object_list)
+    if page.has_next():
+        page.next_page_number()
+    if page.has_previous():
+        page.previous_page_number()
     context = {
         'page' : page
-
     }
+    # return HttpResponse(msg)
     return render(request, 'pagi.html', context)
 
 CONTENT = [str(i) for i in range(10000)]
@@ -80,7 +86,7 @@ def time(request):
     return HttpResponse(f'Time = {datetime.datetime.now().time()}')
 
 def hello(request):
-    name = request.GET.get("name")
+    name = request.GET.get("name", 'Guest')
     age = int(request.GET.get("age", 20))
     print(age)
     return HttpResponse(f'Hello, {name}')
@@ -96,3 +102,12 @@ def demo(request):
         'val': 'Hello'
     }
     return render(request, 'demo.html', context)
+
+def contact_view(request):
+    msg = f'Contact e-mail: {settings.CONTACT_EMAIL}'
+    return HttpResponse(msg)
+
+def since_view(request, date: datetime):
+    days = (datetime.datetime.now() - date).days
+    msg = f'Дней прошло: {days}'
+    return HttpResponse(msg)

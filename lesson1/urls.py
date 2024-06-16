@@ -14,13 +14,27 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
+# import datetime
+from datetime import datetime
 from django.conf import settings
 from django.contrib import admin
 from django.urls import path, include
+from django.urls import register_converter
 from django.views.generic import TemplateView
 
 from demo.views import index, time, hello, sum, demo, pagi, create_car, list_car, create_person, list_person, \
-    list_orders, msg, DemoView
+    list_orders, msg, DemoView, since_view
+
+class DateConverter:
+    regex = '[0-9]{4}-[0-9]{2}-[0-9]{2}'
+    format = '%Y-%m-%d'
+    def to_python(self, value: str) -> datetime:
+        return (datetime.strptime(value, self.format))
+    def to_url(self, value):
+        return value.strftime(self.format)
+
+register_converter(DateConverter, 'dt')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -36,5 +50,6 @@ urlpatterns = [
     path('people/', list_person),
     path('orders/', list_orders),
     path('msg/', DemoView.as_view()),
+    path('since/<dt:date>/', since_view, name='since'),
     # path('__debug__/', include(debug_toolbar.urls)),
 ]

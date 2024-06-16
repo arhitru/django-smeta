@@ -2,11 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Заказы</title>
 </head>
 <body>
+
 {% for order in orders %}
-{{ order.name }}
+{{ order.name }} {{ order.address }}
     <table class='table'>
         <thead>
           <tr>
@@ -20,6 +21,7 @@
           </tr>
         </thead>
       {% for p in order.positions.all %}
+        {% cycle 'gray' 'white' as cur_color silent%}
           <tr>
             <td>{{p.id}}</td>
             <td>{{p.product.name}}</td>
